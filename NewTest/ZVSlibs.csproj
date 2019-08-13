@@ -51,6 +51,8 @@
     <Compile Include="Finished\Point3D.cs" />
     <Compile Include="Finished\Sorting.cs" />
     <Compile Include="Finished\Vector3D.cs" />
+    <Compile Include="InProgress\Tree\Tree.cs" />
+    <Compile Include="InProgress\Tree\TreeEnumerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

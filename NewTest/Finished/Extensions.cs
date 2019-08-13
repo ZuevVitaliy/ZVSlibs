@@ -5,11 +5,11 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NewTest
+namespace ZVSlibs.Extensions
 {
     public static class Extensions
     {
-        private static bool Equal<TypeA, TypeB>(TypeA A, TypeB B)
+        public static bool Equal<TypeA, TypeB>(TypeA A, TypeB B)
         {
             Type typeA = typeof(TypeA);
             Type typeB = typeof(TypeB);
@@ -26,6 +26,19 @@ namespace NewTest
                                     where a.Name == b.Name
                                     select a.GetValue(A).Equals(b.GetValue(B))).All(x => x == true);
             return equalFields && equalProperties;
+        }
+
+        /// <summary>
+        /// Переводит массив строк, содержащий только числа, в массив чисел
+        /// </summary>
+        /// <param name="strings">Строковые значения чисел</param>
+        /// <returns>Массив чисел</returns>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="FormatException"/>
+        /// <exception cref="OverflowException"/>
+        public static int[] ParseToInt(this string[] strings)
+        {
+            return strings.Select(x => int.Parse(x)).ToArray();
         }
     }
 }
