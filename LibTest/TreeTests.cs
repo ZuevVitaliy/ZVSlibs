@@ -36,6 +36,28 @@ namespace LibTest
         }
 
         [TestMethod]
+        public void MovesTest()
+        {
+            Tree<int> tree = new Tree<int>();
+            tree.Add(2);
+            tree.Add(0);
+            tree.MoveDown(1);
+            Assert.AreEqual(0, tree.Get());
+            tree.Add(3);
+            tree.Add(4);
+            tree.MoveDown(0);
+            Assert.AreEqual(3, tree.Get());
+            tree.Add(5);
+            tree.MoveUp();
+            Assert.AreEqual(0, tree.Get());
+            tree.MoveDown(1);
+            Assert.AreEqual(4, tree.Get());
+            while (tree.MoveUp()) ;
+            Assert.IsNull(tree.Get());
+
+        }
+
+        [TestMethod]
         public void ForeachTest()
         {
             Tree<int> tree = new Tree<int>();

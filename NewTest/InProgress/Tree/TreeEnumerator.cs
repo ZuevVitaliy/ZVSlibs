@@ -1,10 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using static ZVSlibs.InProgress.Tree.Tree<object>;
 
 namespace ZVSlibs.InProgress.Tree
 {
-    internal class TreeEnumerator<T> : IEnumerator<T>
+    internal class TreeEnumerator<T> : IEnumerator<T?> where T : struct
     {
         private Tree<T> tree;
         private Tree<T>.Node<T> current;
@@ -15,7 +14,7 @@ namespace ZVSlibs.InProgress.Tree
             this.current = tree.root;
         }
 
-        public T Current => current.value;
+        public T? Current => current.value;
 
         object IEnumerator.Current => Current;
 

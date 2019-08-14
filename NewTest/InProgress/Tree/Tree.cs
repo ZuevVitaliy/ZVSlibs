@@ -8,7 +8,7 @@ using ZVSlibs.Extensions;
 
 namespace ZVSlibs.InProgress.Tree
 {
-    public class Tree<T> : IEnumerable<T>
+    public class Tree<T> : IEnumerable<T?> where T : struct
     {
         internal Node<T> root;
         internal Node<T> current;
@@ -28,10 +28,10 @@ namespace ZVSlibs.InProgress.Tree
             this.ExceptionMessage = "";
         }
 
-        internal class Node<T>
+        internal class Node<T> where T : struct
         {
             public Node<T> root;
-            public T value;
+            public T? value;
             public List<Node<T>> childs;
         }
 
@@ -72,6 +72,41 @@ namespace ZVSlibs.InProgress.Tree
             }
         }
 
+        public T? Get()
+        {
+            return current.value;
+        }
+
+        public T? GetAt(string indexes)
+        {
+            if (MoveTo(indexes))
+                return current.value;
+            else throw new ArgumentOutOfRangeException("элемент по заданному индексу не найден");
+        }
+
+        public T? GetAt(params int[] indexes)
+        {
+            if (MoveTo(indexes))
+                return current.value;
+            else throw new ArgumentOutOfRangeException("элемент по заданному индексу не найден");
+        }
+
+        public bool MoveTo(string indexes)
+        {
+            int[] indxs = indexes.Split('.').ParseToInt();
+            return MoveTo(indxs);
+        }
+
+        public bool MoveTo(params int[] indexes)
+        {
+            foreach (var i in indexes)
+            {
+                if (!MoveDown(i))
+                    return false;
+            }
+            return true;
+        }
+
         public bool MoveUp()
         {
             if (current.root != null)
@@ -95,7 +130,7 @@ namespace ZVSlibs.InProgress.Tree
             }
         }
 
-        public IEnumerator<T> GetEnumerator()
+        public IEnumerator<T?> GetEnumerator()
         {
             return new TreeEnumerator<T>(this);
         }
