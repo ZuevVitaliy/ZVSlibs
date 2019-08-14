@@ -13,9 +13,20 @@ namespace ZVSlibs.InProgress.Tree
         internal Node<T> root;
         internal Node<T> current;
 
-        public string ExceptionMessage { get; private set; } = "";
+        public string ExceptionMessage { get; private set; }
 
         public int Count { get; private set; }
+
+        public Tree()
+        {
+            this.root = new Node<T>()
+            {
+                childs = new List<Node<T>>()
+            };
+            this.current = root;
+            this.Count = 0;
+            this.ExceptionMessage = "";
+        }
 
         internal class Node<T>
         {
