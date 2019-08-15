@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using ZVSlibs.Extensions;
 
 namespace ZVSlibs.InProgress.Tree
@@ -29,7 +28,7 @@ namespace ZVSlibs.InProgress.Tree
                 return sb.ToString();
             }
         }
-
+        private int[] PositionArray { get => mPosition.ToArray(); }
         public Tree()
         {
             this.mRoot = new Node<T>()
@@ -67,11 +66,11 @@ namespace ZVSlibs.InProgress.Tree
 
         public T GetAt(string indexes)
         {
-            Node<T> saveNode = mCurrent;
+            Node<T> savedPosition = mCurrent;
             if (MoveTo(indexes))
             {
                 T result = mCurrent.value;
-                mCurrent = saveNode;
+                mCurrent = savedPosition;
                 return result;
             }
             else throw new ArgumentOutOfRangeException("Элемент по заданному индексу не найден.");
@@ -79,11 +78,11 @@ namespace ZVSlibs.InProgress.Tree
 
         public T GetAt(params int[] indexes)
         {
-            Node<T> saveNode = mCurrent;
+            Node<T> savedPosition = mCurrent;
             if (MoveTo(indexes))
             {
                 T result = mCurrent.value;
-                mCurrent = saveNode;
+                mCurrent = savedPosition;
                 return result;
             }
             else throw new ArgumentOutOfRangeException("Элемент по заданному индексу не найден.");
@@ -94,7 +93,6 @@ namespace ZVSlibs.InProgress.Tree
             int[] indxs = indexes.Split('.').ParseToInt();
             return MoveTo(indxs);
         }
-
 
         public bool MoveTo(params int[] indexes)
         {
@@ -112,34 +110,104 @@ namespace ZVSlibs.InProgress.Tree
             return true;
         }
 
-        public bool MoveUp()
-        {
-            if (mCurrent.root != null)
-            {
-                mCurrent = mCurrent.root;
-                mPosition.RemoveAt(mPosition.Count - 1);
-                return true;
-            }
-            else return false;
-        }
-
         public bool MoveDown(int index)
         {
-            try
-            {
-                mCurrent = mCurrent.childs[index];
-                mPosition.Add(index);
-                return true;
-            }
-            catch (ArgumentOutOfRangeException)
-            {
+            if (index > mCurrent.childs.Count - 1)
                 return false;
+
+            mCurrent = mCurrent.childs[index];
+            mPosition.Add(index);
+            return true;
+        }
+
+        public bool MoveUp()
+        {
+            if (mCurrent.root == null)
+                return false;
+
+            mCurrent = mCurrent.root;
+            mPosition.RemoveAt(mPosition.Count - 1);
+            return true;
+        }
+
+        public bool Remove()
+        {
+            Node<T> savedPosition = mCurrent;
+
+            if (!MoveUp())
+                return false;
+
+            for (int i = 0; i < mCurrent.childs.Count(); i++)
+            {
+                if (savedPosition == mCurrent.childs[i])
+                {
+                    mCurrent.childs.RemoveAt(i);
+                    return true;
+                }
             }
+            return false;
+        }
+
+        public bool RemoveAt(string indexes)
+        {
+            int[] indxs = indexes.Split('.').ParseToInt();
+            return RemoveAt(indxs);
+        }
+
+        public bool RemoveAt(int[] indexes)
+        {
+            int[] position = PositionArray;
+            Node<T> savedPosition = mCurrent;
+            bool done;
+
+            if (OnOnePath(position, indexes))
+            {
+                if (MoveTo(indexes))
+                {
+                    done = Remove();
+                    return done;
+                }
+                else return false;
+            }
+            else
+            {
+                if (MoveTo(indexes))
+                {
+                    done = Remove();
+                    mCurrent = savedPosition;
+                    return done;
+                }
+                else return false;
+            }
+        }
+
+        public string[] GetIndexesMap()
+        {
+            List<string> indexes = new List<string>();
+            TreeEnumerator<T> enumerator = this.GetEnumerator() as TreeEnumerator<T>;
+            while (enumerator.MoveNext())
+            {
+                indexes.Add(enumerator.Position);
+            }
+            return indexes.ToArray();
+        }
+
+        private bool OnOnePath(int[] path1, int[] path2)
+        {
+            if (path1.Length > path2.Length)
+            {
+                for (int i = 0; i < path2.Length; i++)
+                {
+                    if (path1[i] != path2[i])
+                        return false;
+                }
+            }
+            return true;
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-            return new TreeEnumerator<T>(this);
+            return new TreeEnumerator<T>(mRoot);
         }
 
         IEnumerator IEnumerable.GetEnumerator()

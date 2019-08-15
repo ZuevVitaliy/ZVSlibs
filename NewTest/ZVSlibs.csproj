@@ -53,6 +53,7 @@
     <Compile Include="Finished\Vector3D.cs" />
     <Compile Include="InProgress\Tree\Tree.cs" />
     <Compile Include="InProgress\Tree\TreeEnumerator.cs" />
+    <Compile Include="InProgress\Tree\TreeExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

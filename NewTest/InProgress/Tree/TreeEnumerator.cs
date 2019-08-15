@@ -1,17 +1,20 @@
-﻿using System.Collections;
+﻿using NewTest.InProgress.Tree;
+using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 
 namespace ZVSlibs.InProgress.Tree
 {
     internal class TreeEnumerator<T> : IEnumerator<T>
     {
-        private Tree<T> tree;
+        private readonly Tree<T>.Node<T> cRoot;
         private Tree<T>.Node<T> current;
+        private StringBuilder positionBuilder = new StringBuilder();
+        public string Position { get => positionBuilder.ToString(); }
 
-        public TreeEnumerator(Tree<T> tree)
+        public TreeEnumerator(Tree<T>.Node<T> rootNode)
         {
-            this.tree = tree;
-            this.current = tree.mRoot;
+            this.current = this.cRoot = rootNode;
         }
 
         public T Current => current.value;
@@ -30,6 +33,7 @@ namespace ZVSlibs.InProgress.Tree
                 {
                     path.Push(0);
                     current = current.childs[0];
+                    positionBuilder.Append("0.");
                     return true;
                 }
                 else return false;
@@ -40,6 +44,7 @@ namespace ZVSlibs.InProgress.Tree
                 {
                     path.Push(0);
                     current = current.childs[0];
+                    positionBuilder.Append("0.");
                     return true;
                 }
                 else
@@ -47,23 +52,35 @@ namespace ZVSlibs.InProgress.Tree
                     int i;
                     do
                     {
-                        if (current.root == null)
+                        if (!MoveUp())
                             return false;
 
-                        current = current.root;
+                        positionBuilder.RemoveLastIndex();
                         i = path.Pop();
                         i++;
                     } while (current.childs.Count <= i);
+
                     path.Push(i);
                     current = current.childs[i];
+                    positionBuilder.Append($"{i}.");
                     return true;
                 }
             }
         }
 
+        private bool MoveUp()
+        {
+            if (current.root == null)
+                return false;
+
+            current = current.root;
+            return true;
+        }
+
         public void Reset()
         {
-            current = tree.mRoot;
+            current = cRoot;
+            positionBuilder = new StringBuilder();
         }
     }
 }

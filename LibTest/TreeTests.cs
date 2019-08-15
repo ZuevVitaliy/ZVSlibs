@@ -76,6 +76,7 @@ namespace LibTest
             Assert.AreEqual(4, tree.Get());
             while (tree.MoveUp()) ;
             Assert.AreEqual("", tree.Position);
+            string[] map = tree.GetIndexesMap();
         }
 
         [TestMethod]
