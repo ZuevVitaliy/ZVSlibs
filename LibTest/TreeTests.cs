@@ -36,25 +36,46 @@ namespace LibTest
         }
 
         [TestMethod]
-        public void MovesTest()
+        public void RemoveTest()
+        {
+            throw new NotImplementedException();
+        }
+
+        [TestMethod]
+        public void RemoveAtTest()
+        {
+            throw new NotImplementedException();
+        }
+
+        [TestMethod]
+        public void MoveAtTest()
+        {
+            throw new NotImplementedException();
+        }
+
+        [TestMethod]
+        public void SimpleMovesTest()
         {
             Tree<int> tree = new Tree<int>();
             tree.Add(2);
             tree.Add(0);
             tree.MoveDown(1);
+            Assert.AreEqual("1", tree.Position);
             Assert.AreEqual(0, tree.Get());
             tree.Add(3);
             tree.Add(4);
             tree.MoveDown(0);
+            Assert.AreEqual("1.0", tree.Position);
             Assert.AreEqual(3, tree.Get());
             tree.Add(5);
             tree.MoveUp();
+            Assert.AreEqual("1", tree.Position);
             Assert.AreEqual(0, tree.Get());
             tree.MoveDown(1);
+            Assert.AreEqual("1.1", tree.Position);
             Assert.AreEqual(4, tree.Get());
             while (tree.MoveUp()) ;
-            Assert.IsNull(tree.Get());
-
+            Assert.AreEqual("", tree.Position);
         }
 
         [TestMethod]

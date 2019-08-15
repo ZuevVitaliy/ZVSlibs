@@ -8,87 +8,85 @@ using ZVSlibs.Extensions;
 
 namespace ZVSlibs.InProgress.Tree
 {
-    public class Tree<T> : IEnumerable<T?> where T : struct
+    public class Tree<T> : IEnumerable<T>
     {
-        internal Node<T> root;
-        internal Node<T> current;
-
-        public string ExceptionMessage { get; private set; }
+        internal Node<T> mRoot;
+        internal Node<T> mCurrent;
+        internal List<int> mPosition = new List<int>();
 
         public int Count { get; private set; }
+        public string Position
+        {
+            get
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (var i in mPosition)
+                {
+                    sb.Append($"{i}.");
+                }
+                if (sb.Length > 0)
+                    sb.Remove(sb.Length - 1, 1);
+                return sb.ToString();
+            }
+        }
 
         public Tree()
         {
-            this.root = new Node<T>()
+            this.mRoot = new Node<T>()
             {
                 childs = new List<Node<T>>()
             };
-            this.current = root;
+            this.mCurrent = mRoot;
             this.Count = 0;
-            this.ExceptionMessage = "";
         }
 
-        internal class Node<T> where T : struct
+        internal class Node<T>
         {
             public Node<T> root;
-            public T? value;
+            public T value;
             public List<Node<T>> childs;
         }
 
         public void Add(T value)
         {
-            current.childs.Add(new Node<T>
+            mCurrent.childs.Add(new Node<T>
             {
-                root = current,
+                root = mCurrent,
                 value = value,
                 childs = new List<Node<T>>()
             });
             Count++;
         }
 
-        public bool Select(string indexes)
+        public T Get()
         {
-            string[] ixs = indexes.Split('.');
-            return Select(ixs.ParseToInt());
+            if (mCurrent.root == null)
+                throw new NullReferenceException("Значение в корневом элементе отсутствует.");
+            return mCurrent.value;
         }
 
-        public bool Select(params int[] indexes)
+        public T GetAt(string indexes)
         {
-            current = root;
-            Node<T> memory = current;
-            try
-            {
-                foreach (int i in indexes)
-                {
-                    current = current.childs[i];
-                }
-                return true;
-            }
-            catch (ArgumentOutOfRangeException ex)
-            {
-                ExceptionMessage = ex.Message;
-                current = memory;
-                return false;
-            }
-        }
-
-        public T? Get()
-        {
-            return current.value;
-        }
-
-        public T? GetAt(string indexes)
-        {
+            Node<T> saveNode = mCurrent;
             if (MoveTo(indexes))
-                return current.value;
-            else throw new ArgumentOutOfRangeException("элемент по заданному индексу не найден");
+            {
+                T result = mCurrent.value;
+                mCurrent = saveNode;
+                return result;
+            }
+            else throw new ArgumentOutOfRangeException("Элемент по заданному индексу не найден.");
         }
 
-        public T? GetAt(params int[] indexes)
+        public T GetAt(params int[] indexes)
         {
+            Node<T> saveNode = mCurrent;
             if (MoveTo(indexes))
-                return current.value;
-            else throw new ArgumentOutOfRangeException("элемент по заданному индексу не найден");
+            {
+                T result = mCurrent.value;
+                mCurrent = saveNode;
+                return result;
+            }
+            else throw new ArgumentOutOfRangeException("Элемент по заданному индексу не найден.");
         }
 
         public bool MoveTo(string indexes)
@@ -97,21 +95,29 @@ namespace ZVSlibs.InProgress.Tree
             return MoveTo(indxs);
         }
 
+
         public bool MoveTo(params int[] indexes)
         {
+            Node<T> buf = mCurrent;
+            mCurrent = mRoot;
             foreach (var i in indexes)
             {
                 if (!MoveDown(i))
+                {
+                    mCurrent = buf;
                     return false;
+                }
             }
+            mPosition = indexes.ToList();
             return true;
         }
 
         public bool MoveUp()
         {
-            if (current.root != null)
+            if (mCurrent.root != null)
             {
-                current = current.root;
+                mCurrent = mCurrent.root;
+                mPosition.RemoveAt(mPosition.Count - 1);
                 return true;
             }
             else return false;
@@ -121,7 +127,8 @@ namespace ZVSlibs.InProgress.Tree
         {
             try
             {
-                current = current.childs[index];
+                mCurrent = mCurrent.childs[index];
+                mPosition.Add(index);
                 return true;
             }
             catch (ArgumentOutOfRangeException)
@@ -130,7 +137,7 @@ namespace ZVSlibs.InProgress.Tree
             }
         }
 
-        public IEnumerator<T?> GetEnumerator()
+        public IEnumerator<T> GetEnumerator()
         {
             return new TreeEnumerator<T>(this);
         }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ZVSlibs.InProgress.Tree
 {
-    internal class TreeEnumerator<T> : IEnumerator<T?> where T : struct
+    internal class TreeEnumerator<T> : IEnumerator<T>
     {
         private Tree<T> tree;
         private Tree<T>.Node<T> current;
@@ -11,10 +11,10 @@ namespace ZVSlibs.InProgress.Tree
         public TreeEnumerator(Tree<T> tree)
         {
             this.tree = tree;
-            this.current = tree.root;
+            this.current = tree.mRoot;
         }
 
-        public T? Current => current.value;
+        public T Current => current.value;
 
         object IEnumerator.Current => Current;
 
@@ -63,7 +63,7 @@ namespace ZVSlibs.InProgress.Tree
 
         public void Reset()
         {
-            current = tree.root;
+            current = tree.mRoot;
         }
     }
 }
