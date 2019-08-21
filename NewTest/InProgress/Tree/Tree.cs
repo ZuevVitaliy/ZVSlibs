@@ -5,6 +5,10 @@ using System.Linq;
 
 namespace ZVSlibs.InProgress.Tree
 {
+    /// <summary>
+    /// Структура данных, хранящая значения в виде логического дерева.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class Tree<T> : IEnumerable<T>
     {
         internal readonly TreeNode<T> cRoot;
@@ -21,13 +25,7 @@ namespace ZVSlibs.InProgress.Tree
                 childs = new Dictionary<string, TreeNode<T>>()
             };
             this.mCurrent = cRoot;
-            this.Count = 0;
         }
-
-        /// <summary>
-        /// Количество элементов, хранящихся в дереве.
-        /// </summary>
-        public int Count { get; private set; }
 
         /// <summary>
         /// Возвращает значение элемента по цепочке индексов.
@@ -74,29 +72,41 @@ namespace ZVSlibs.InProgress.Tree
         /// Возвращает карту цепочек индексов в качестве массива.
         /// </summary>
         /// <returns>Карта цепочек индексов.</returns>
-        public string[][] GetIndexesMap()
+        public KeyValuePair<string[], T>[] GetIndexesMap()
         {
-            List<string[]> indexes = new List<string[]>();
+            List<KeyValuePair<string[], T>> indexes = new List<KeyValuePair<string[], T>>();
             TreeEnumerator<T> enumerator = this.GetEnumerator() as TreeEnumerator<T>;
             while (enumerator.MoveNext())
             {
-                indexes.Add(enumerator.Position);
+                indexes.Add(new KeyValuePair<string[], T>(enumerator.Position, enumerator.Current));
             }
             return indexes.ToArray();
         }
 
+        /// <summary>
+        /// Удалить звено по индексу (нижние индексы также удалятся).
+        /// </summary>
+        /// <param name="indexesChain">Индекс удаляемого значения.</param>
+        /// <returns>Успех операции.</returns>
         public bool RemoveAt(string indexesChain)
         {
             string[] indxs = indexesChain.Split('.');
             return RemoveAt(indxs);
         }
 
-        public bool RemoveAt(string[] indexesChain)
+        /// <summary>
+        /// Удалить звено по индексу (нижние индексы также удалятся).
+        /// </summary>
+        /// <param name="indexesChain">Индекс удаляемого значения.</param>
+        /// <returns>Успех операции.</returns>
+        public bool RemoveAt(params string[] indexesChain)
         {
             Reset();
             if (MoveTo(indexesChain))
             {
-                return Remove();
+                bool done = Remove();
+                Reset();
+                return done;
             }
             else return false;
         }
@@ -151,12 +161,6 @@ namespace ZVSlibs.InProgress.Tree
             return false;
         }
 
-        private bool MoveTo(string indexes)
-        {
-            string[] indxs = indexes.Split('.');
-            return MoveTo(indxs);
-        }
-
         private bool MoveTo(string[] indexes)
         {
             Reset();
@@ -198,7 +202,6 @@ namespace ZVSlibs.InProgress.Tree
                 if (child.Value == savedPosition)
                 {
                     mCurrent.childs.Remove(child.Key);
-                    Count--;
                     return true;
                 }
             }
@@ -218,7 +221,11 @@ namespace ZVSlibs.InProgress.Tree
             {
                 if (!MoveDown(indexesChain[i]))
                 {
-                    mCurrent.childs.Add(indexesChain[i], new TreeNode<T>());
+                    mCurrent.childs.Add(indexesChain[i], new TreeNode<T>
+                    {
+                        root = mCurrent,
+                        childs = new Dictionary<string, TreeNode<T>>()
+                    });
                     if (indexesChain.Length - 1 == i)
                     {
                         mCurrent.childs[indexesChain[i]].value = value;
@@ -226,8 +233,11 @@ namespace ZVSlibs.InProgress.Tree
                     }
                     MoveDown(indexesChain[i]);
                 }
+                else if (i == indexesChain.Length - 1)
+                {
+                    mCurrent.value = value;
+                }
             }
-            mCurrent.value = value;
         }
 
         internal class TreeNode<T>

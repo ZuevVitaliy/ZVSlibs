@@ -58,24 +58,24 @@ namespace ZVSlibs.InProgress.Tree
                             key = mPosition.Pop();
                             foreach (var child in mCurrent.childs)
                             {
+                                i++;
                                 if (child.Key == key)
                                 {
                                     break;
                                 }
-                                i++;
                             }
                         }
-                    } while (mCurrent.childs.Count - 1 <= i);
+                    } while (mCurrent.childs.Count <= i);
 
                     foreach (var child in mCurrent.childs)
                     {
-                        i--;
                         if (i == 0)
                         {
                             mPosition.Push(child.Key);
                             mCurrent = mCurrent.childs[child.Key];
                             return true;
                         }
+                        i--;
                     }
                     return false;
                 }
