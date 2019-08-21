@@ -1,86 +1,100 @@
-﻿using NewTest.InProgress.Tree;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace ZVSlibs.InProgress.Tree
 {
     internal class TreeEnumerator<T> : IEnumerator<T>
     {
-        private readonly Tree<T>.Node<T> cRoot;
-        private Tree<T>.Node<T> current;
-        private StringBuilder positionBuilder = new StringBuilder();
-        public string Position { get => positionBuilder.ToString(); }
+        private readonly Tree<T>.TreeNode<T> cRoot;
+        private Tree<T>.TreeNode<T> mCurrent;
+        private Stack<string> mPosition = new Stack<string>();
 
-        public TreeEnumerator(Tree<T>.Node<T> rootNode)
+        public TreeEnumerator(Tree<T>.TreeNode<T> rootNode)
         {
-            this.current = this.cRoot = rootNode;
+            this.mCurrent = this.cRoot = rootNode;
         }
 
-        public T Current => current.value;
-
+        public T Current => mCurrent.value;
         object IEnumerator.Current => Current;
+        public string[] Position { get => mPosition.Reverse().ToArray(); }
 
         public void Dispose()
         { }
 
-        private Stack<int> path = new Stack<int>();
         public bool MoveNext()
         {
-            if (current.root == null)
+            if (mCurrent.root == null)
             {
-                if (current.childs.Count > 0)
+                if (mCurrent.childs.Count > 0)
                 {
-                    path.Push(0);
-                    current = current.childs[0];
-                    positionBuilder.Append("0.");
+                    mPosition.Push(mCurrent.childs.First().Key);
+                    mCurrent = mCurrent.childs.First().Value;
                     return true;
                 }
                 else return false;
             }
             else
             {
-                if (current.childs.Count > 0)
+                if (mCurrent.childs.Count > 0)
                 {
-                    path.Push(0);
-                    current = current.childs[0];
-                    positionBuilder.Append("0.");
+                    mPosition.Push(mCurrent.childs.First().Key);
+                    mCurrent = mCurrent.childs.First().Value;
                     return true;
                 }
                 else
                 {
                     int i;
+                    string key;
                     do
                     {
                         if (!MoveUp())
+                        {
                             return false;
+                        }
+                        else
+                        {
+                            i = 0;
+                            key = mPosition.Pop();
+                            foreach (var child in mCurrent.childs)
+                            {
+                                if (child.Key == key)
+                                {
+                                    break;
+                                }
+                                i++;
+                            }
+                        }
+                    } while (mCurrent.childs.Count - 1 <= i);
 
-                        positionBuilder.RemoveLastIndex();
-                        i = path.Pop();
-                        i++;
-                    } while (current.childs.Count <= i);
-
-                    path.Push(i);
-                    current = current.childs[i];
-                    positionBuilder.Append($"{i}.");
-                    return true;
+                    foreach (var child in mCurrent.childs)
+                    {
+                        i--;
+                        if (i == 0)
+                        {
+                            mPosition.Push(child.Key);
+                            mCurrent = mCurrent.childs[child.Key];
+                            return true;
+                        }
+                    }
+                    return false;
                 }
             }
         }
 
-        private bool MoveUp()
-        {
-            if (current.root == null)
-                return false;
-
-            current = current.root;
-            return true;
-        }
-
         public void Reset()
         {
-            current = cRoot;
-            positionBuilder = new StringBuilder();
+            mCurrent = cRoot;
+            mPosition.Clear();
+        }
+
+        private bool MoveUp()
+        {
+            if (mCurrent.root == null)
+                return false;
+
+            mCurrent = mCurrent.root;
+            return true;
         }
     }
 }

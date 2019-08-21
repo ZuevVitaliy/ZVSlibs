@@ -38,7 +38,24 @@ namespace ZVSlibs.Extensions
         /// <exception cref="OverflowException"/>
         public static int[] ParseToInt(this string[] strings)
         {
+            if (strings.Contains(""))
+                return new int[0];
+
             return strings.Select(x => int.Parse(x)).ToArray();
+        }
+
+        public static string ToStr(this int[] numbers)
+        {
+            if (numbers.Length > 0)
+            {
+                StringBuilder res = new StringBuilder();
+                foreach (var n in numbers)
+                {
+                    res.Append($"{n}.");
+                }
+                return res.Remove(res.Length - 1, 1).ToString();
+            }
+            else return "";
         }
     }
 }

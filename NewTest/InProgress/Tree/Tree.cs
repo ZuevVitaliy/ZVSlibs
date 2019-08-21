@@ -2,188 +2,81 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using ZVSlibs.Extensions;
 
 namespace ZVSlibs.InProgress.Tree
 {
     public class Tree<T> : IEnumerable<T>
     {
-        internal Node<T> mRoot;
-        internal Node<T> mCurrent;
-        internal List<int> mPosition = new List<int>();
+        internal readonly TreeNode<T> cRoot;
+        internal TreeNode<T> mCurrent;
+        internal Stack<string> mPosition = new Stack<string>();
 
-        public int Count { get; private set; }
-        public string Position
-        {
-            get
-            {
-                StringBuilder sb = new StringBuilder();
-                foreach (var i in mPosition)
-                {
-                    sb.Append($"{i}.");
-                }
-                if (sb.Length > 0)
-                    sb.Remove(sb.Length - 1, 1);
-                return sb.ToString();
-            }
-        }
-        private int[] PositionArray { get => mPosition.ToArray(); }
+        /// <summary>
+        /// Ctor
+        /// </summary>
         public Tree()
         {
-            this.mRoot = new Node<T>()
+            this.cRoot = new TreeNode<T>()
             {
-                childs = new List<Node<T>>()
+                childs = new Dictionary<string, TreeNode<T>>()
             };
-            this.mCurrent = mRoot;
+            this.mCurrent = cRoot;
             this.Count = 0;
         }
 
-        internal class Node<T>
-        {
-            public Node<T> root;
-            public T value;
-            public List<Node<T>> childs;
-        }
+        /// <summary>
+        /// Количество элементов, хранящихся в дереве.
+        /// </summary>
+        public int Count { get; private set; }
 
-        public void Add(T value)
+        /// <summary>
+        /// Возвращает значение элемента по цепочке индексов.
+        /// </summary>
+        /// <param name="indexesChain">Цепочка индексов.</param>
+        /// <returns>Значение элемента.</returns>
+        public T this[params string[] indexesChain]
         {
-            mCurrent.childs.Add(new Node<T>
+            get
             {
-                root = mCurrent,
-                value = value,
-                childs = new List<Node<T>>()
-            });
-            Count++;
-        }
-
-        public T Get()
-        {
-            if (mCurrent.root == null)
-                throw new NullReferenceException("Значение в корневом элементе отсутствует.");
-            return mCurrent.value;
-        }
-
-        public T GetAt(string indexes)
-        {
-            Node<T> savedPosition = mCurrent;
-            if (MoveTo(indexes))
-            {
-                T result = mCurrent.value;
-                mCurrent = savedPosition;
-                return result;
-            }
-            else throw new ArgumentOutOfRangeException("Элемент по заданному индексу не найден.");
-        }
-
-        public T GetAt(params int[] indexes)
-        {
-            Node<T> savedPosition = mCurrent;
-            if (MoveTo(indexes))
-            {
-                T result = mCurrent.value;
-                mCurrent = savedPosition;
-                return result;
-            }
-            else throw new ArgumentOutOfRangeException("Элемент по заданному индексу не найден.");
-        }
-
-        public bool MoveTo(string indexes)
-        {
-            int[] indxs = indexes.Split('.').ParseToInt();
-            return MoveTo(indxs);
-        }
-
-        public bool MoveTo(params int[] indexes)
-        {
-            Node<T> buf = mCurrent;
-            mCurrent = mRoot;
-            foreach (var i in indexes)
-            {
-                if (!MoveDown(i))
+                if (indexesChain == null || indexesChain.Length == 0)
                 {
-                    mCurrent = buf;
-                    return false;
+                    throw new ArgumentNullException("Значение индекса не может быть пустым.");
                 }
+
+                return GetAt(indexesChain);
             }
-            mPosition = indexes.ToList();
-            return true;
-        }
-
-        public bool MoveDown(int index)
-        {
-            if (index > mCurrent.childs.Count - 1)
-                return false;
-
-            mCurrent = mCurrent.childs[index];
-            mPosition.Add(index);
-            return true;
-        }
-
-        public bool MoveUp()
-        {
-            if (mCurrent.root == null)
-                return false;
-
-            mCurrent = mCurrent.root;
-            mPosition.RemoveAt(mPosition.Count - 1);
-            return true;
-        }
-
-        public bool Remove()
-        {
-            Node<T> savedPosition = mCurrent;
-
-            if (!MoveUp())
-                return false;
-
-            for (int i = 0; i < mCurrent.childs.Count(); i++)
+            set
             {
-                if (savedPosition == mCurrent.childs[i])
+                if (indexesChain == null || indexesChain.Length == 0)
                 {
-                    mCurrent.childs.RemoveAt(i);
-                    return true;
+                    throw new ArgumentNullException("Значение индекса не может быть пустым.");
                 }
-            }
-            return false;
-        }
 
-        public bool RemoveAt(string indexes)
-        {
-            int[] indxs = indexes.Split('.').ParseToInt();
-            return RemoveAt(indxs);
-        }
-
-        public bool RemoveAt(int[] indexes)
-        {
-            int[] position = PositionArray;
-            Node<T> savedPosition = mCurrent;
-            bool done;
-
-            if (OnOnePath(position, indexes))
-            {
-                if (MoveTo(indexes))
-                {
-                    done = Remove();
-                    return done;
-                }
-                else return false;
-            }
-            else
-            {
-                if (MoveTo(indexes))
-                {
-                    done = Remove();
-                    mCurrent = savedPosition;
-                    return done;
-                }
-                else return false;
+                SetTo(indexesChain, value);
             }
         }
 
-        public string[] GetIndexesMap()
+        /// <summary>
+        /// Возвращает экземпляр перечеслителя класса <see cref="TreeEnumerator{T}"/>.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerator<T> GetEnumerator()
         {
-            List<string> indexes = new List<string>();
+            return new TreeEnumerator<T>(cRoot);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        /// <summary>
+        /// Возвращает карту цепочек индексов в качестве массива.
+        /// </summary>
+        /// <returns>Карта цепочек индексов.</returns>
+        public string[][] GetIndexesMap()
+        {
+            List<string[]> indexes = new List<string[]>();
             TreeEnumerator<T> enumerator = this.GetEnumerator() as TreeEnumerator<T>;
             while (enumerator.MoveNext())
             {
@@ -192,27 +85,156 @@ namespace ZVSlibs.InProgress.Tree
             return indexes.ToArray();
         }
 
-        private bool OnOnePath(int[] path1, int[] path2)
+        public bool RemoveAt(string indexesChain)
         {
-            if (path1.Length > path2.Length)
+            string[] indxs = indexesChain.Split('.');
+            return RemoveAt(indxs);
+        }
+
+        public bool RemoveAt(string[] indexesChain)
+        {
+            Reset();
+            if (MoveTo(indexesChain))
             {
-                for (int i = 0; i < path2.Length; i++)
+                return Remove();
+            }
+            else return false;
+        }
+
+        private T GetAt(string[] indexes)
+        {
+            Reset();
+            if (MoveTo(indexes))
+            {
+                return mCurrent.value;
+            }
+            else throw new ArgumentOutOfRangeException("Элемент по заданному индексу не найден.");
+        }
+
+        private Stack<string> GetPositionFrom(TreeNode<T> current)
+        {
+            Stack<string> buf = new Stack<string>();
+            TreeNode<T> lowerNode;
+            while (current.root != null)
+            {
+                lowerNode = current;
+                current = current.root;
+                int count = current.childs.Count();
+                foreach (var child in current.childs)
                 {
-                    if (path1[i] != path2[i])
-                        return false;
+                    if (child.Value == lowerNode)
+                    {
+                        buf.Push(child.Key);
+                        break;
+                    }
+                }
+            }
+            Stack<string> result = new Stack<string>(buf.Count);
+            for (int i = 0; i < buf.Count; i++)
+            {
+                result.Push(buf.Pop());
+            }
+            return result;
+        }
+
+        private bool MoveDown(string key)
+        {
+            foreach (var child in mCurrent.childs)
+            {
+                if (child.Key == key)
+                {
+                    mCurrent = mCurrent.childs[key];
+                    mPosition.Push(key);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool MoveTo(string indexes)
+        {
+            string[] indxs = indexes.Split('.');
+            return MoveTo(indxs);
+        }
+
+        private bool MoveTo(string[] indexes)
+        {
+            Reset();
+            foreach (var i in indexes)
+            {
+                if (!MoveDown(i))
+                {
+                    return false;
                 }
             }
             return true;
         }
 
-        public IEnumerator<T> GetEnumerator()
+        private bool MoveUp()
         {
-            return new TreeEnumerator<T>(mRoot);
+            if (mCurrent.root == null)
+            {
+                return false;
+            }
+            else
+            {
+                mCurrent = mCurrent.root;
+                mPosition.Pop();
+                return true;
+            }
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        private bool Remove()
         {
-            return GetEnumerator();
+            TreeNode<T> savedPosition = mCurrent;
+
+            if (!MoveUp())
+            {
+                return false;
+            }
+
+            foreach (var child in mCurrent.childs)
+            {
+                if (child.Value == savedPosition)
+                {
+                    mCurrent.childs.Remove(child.Key);
+                    Count--;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private void Reset()
+        {
+            mCurrent = cRoot;
+            mPosition = new Stack<string>();
+        }
+
+        private void SetTo(string[] indexesChain, T value)
+        {
+            Reset();
+            for (int i = 0; i < indexesChain.Length; i++)
+            {
+                if (!MoveDown(indexesChain[i]))
+                {
+                    mCurrent.childs.Add(indexesChain[i], new TreeNode<T>());
+                    if (indexesChain.Length - 1 == i)
+                    {
+                        mCurrent.childs[indexesChain[i]].value = value;
+                        break;
+                    }
+                    MoveDown(indexesChain[i]);
+                }
+            }
+            mCurrent.value = value;
+        }
+
+        internal class TreeNode<T>
+        {
+            public Dictionary<string, TreeNode<T>> childs;
+            public TreeNode<T> root;
+            public T value;
         }
     }
 }
