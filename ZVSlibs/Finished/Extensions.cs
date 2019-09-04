@@ -8,10 +8,16 @@ namespace ZVSlibs.Extensions
 {
     public static class Extensions
     {
-        public static bool Equal<TypeA, TypeB>(TypeA A, TypeB B)
+        /// <summary>
+        /// Метод сравнения объектов на равенство значений для одноименных полей и свойств.
+        /// </summary>
+        /// <param name="A">Объект А.</param>
+        /// <param name="B">Объект Б</param>
+        /// <returns>Равны обекты или нет по одноименным полям и свойствам.</returns>
+        public static bool Equal(object A, object B)
         {
-            Type typeA = typeof(TypeA);
-            Type typeB = typeof(TypeB);
+            Type typeA = A.GetType();
+            Type typeB = B.GetType();
             FieldInfo[] fieldsA = typeA.GetFields();
             FieldInfo[] fieldsB = typeB.GetFields();
             bool equalFields = (from a in fieldsA
