@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ZVSlibs.Extensions
 {
@@ -44,18 +43,13 @@ namespace ZVSlibs.Extensions
             return strings.Select(x => int.Parse(x)).ToArray();
         }
 
-        public static string ToStr(this int[] numbers)
+        /// <summary>
+        /// Метод с пока что не определенной куда-то по***нью
+        /// </summary>
+        public static void SomeShit()
         {
-            if (numbers.Length > 0)
-            {
-                StringBuilder res = new StringBuilder();
-                foreach (var n in numbers)
-                {
-                    res.Append($"{n}.");
-                }
-                return res.Remove(res.Length - 1, 1).ToString();
-            }
-            else return "";
+            //получить всех наследников от класса
+            var classes = typeof(HttpContent).Assembly.ExportedTypes.Where(t => typeof(HttpContent).IsAssignableFrom(t));
         }
     }
 }

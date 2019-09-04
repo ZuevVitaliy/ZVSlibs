@@ -2,26 +2,13 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using ZVSlibs.Extensions;
-using ZVSlibs.InProgress.Tree;
-using System.Net.Http;
+using ZVSlibs.Tree;
 
 namespace LibTest
 {
     [TestClass]
     public class TreeTests
     {
-        [TestMethod]
-        public void Test()
-        {
-            //получить всех наследников от класса
-            //var classes = typeof(HttpContent).Assembly.ExportedTypes.Where(t => typeof(HttpContent).IsAssignableFrom(t));
-
-            Tree<int?> tree = new Tree<int?>();
-            tree["bla", "bla", "bla"] = null;
-        }
-
         [TestMethod]
         public void SetToGetAt_Test()
         {

@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ZVSlibs.Matrix
 {
-    class NotSquareException : Exception { }
+    internal class NotSquareException : Exception
+    { }
 
     /// <summary>
     /// Класс, предоставляющий операции для работы с матрицами.

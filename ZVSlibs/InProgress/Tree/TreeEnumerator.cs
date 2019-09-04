@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ZVSlibs.InProgress.Tree
+namespace ZVSlibs.Tree
 {
     internal class TreeEnumerator<T> : IEnumerator<T>
     {

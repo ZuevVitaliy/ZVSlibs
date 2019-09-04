@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ZVSlibs.Sorting
 {
@@ -32,7 +28,6 @@ namespace ZVSlibs.Sorting
                         if (array[i].CompareTo(array[j]) > 0)
                             Swap(ref array[i], ref array[j]);
                     }
-
                     else
                     {
                         if (array[i].CompareTo(array[j]) < 0)
