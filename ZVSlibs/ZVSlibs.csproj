@@ -55,12 +55,15 @@
     <Compile Include="Finished\Point3D.cs" />
     <Compile Include="Finished\Sorting.cs" />
     <Compile Include="Finished\Vector3D.cs" />
-    <Compile Include="InProgress\Tree\Tree.cs" />
-    <Compile Include="InProgress\Tree\TreeEnumerator.cs" />
+    <Compile Include="Finished\Tree\Tree.cs" />
+    <Compile Include="Finished\Tree\TreeEnumerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="InProgress\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

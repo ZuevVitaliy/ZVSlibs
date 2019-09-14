@@ -6,6 +6,9 @@ using System.Text;
 
 namespace ZVSlibs.Extensions
 {
+    /// <summary>
+    /// Класс расширений
+    /// </summary>
     public static class Extensions
     {
         /// <summary>
