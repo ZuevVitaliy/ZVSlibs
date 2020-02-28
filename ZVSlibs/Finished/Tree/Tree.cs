@@ -242,8 +242,8 @@ namespace ZVSlibs.Tree
 
         internal class TreeNode<T>
         {
-            public Dictionary<string, TreeNode<T>> childs;
             public TreeNode<T> root;
+            public Dictionary<string, TreeNode<T>> childs;
             public T value;
         }
     }

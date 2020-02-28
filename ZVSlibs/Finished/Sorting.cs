@@ -16,7 +16,7 @@ namespace ZVSlibs.Sorting
         /// </summary>
         /// <typeparam name="T">Тип массива.</typeparam>
         /// <param name="array">Массив для сортировки.</param>
-        /// <param name="ascending">если <c>true</c>, то сортировка по возрастанию.</param>
+        /// <param name="ascending">если <i>true</i>, то сортировка по возрастанию.</param>
         public static void BubbleSorter<T>(T[] array, bool ascending) where T : IComparable<T>
         {
             for (int i = 0; i < array.Length - 1; i++)
@@ -42,7 +42,7 @@ namespace ZVSlibs.Sorting
         /// </summary>
         /// <typeparam name="T">Тип массива.</typeparam>
         /// <param name="array">Массив для сортировки.</param>
-        /// <param name="ascending">если <c>true</c>, то сортировка по возрастанию.</param>
+        /// <param name="ascending">если <i>true</i>, то сортировка по возрастанию.</param>
         public static void QuickSorter<T>(T[] array, bool ascending) where T : IComparable<T>
         {
             int partition(T[] m, int a, int b)
@@ -70,14 +70,14 @@ namespace ZVSlibs.Sorting
                 }
                 return wall--;
             }
-            void quicksort(T[] m, int a, int b)
+            void Quicksort(T[] m, int a, int b)
             {
                 if (a >= b) return;
                 int c = partition(m, a, b);
-                quicksort(m, a, c - 1);
-                quicksort(m, c + 1, b);
+                Quicksort(m, a, c - 1);
+                Quicksort(m, c + 1, b);
             }
-            quicksort(array, 0, array.Length - 1);
+            Quicksort(array, 0, array.Length - 1);
         }
     }
 }
