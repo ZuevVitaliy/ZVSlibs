@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace ZVSlibs.Sorting
+namespace ZVS.FilterSort
 {
-    public static class Sorter
+    public static class Sorting
     {
         private static void Swap<T>(ref T a, ref T b)
         {
@@ -17,7 +17,7 @@ namespace ZVSlibs.Sorting
         /// <typeparam name="T">Тип массива.</typeparam>
         /// <param name="array">Массив для сортировки.</param>
         /// <param name="ascending">если <i>true</i>, то сортировка по возрастанию.</param>
-        public static void BubbleSorter<T>(T[] array, bool ascending) where T : IComparable<T>
+        public static void BubbleSort<T>(T[] array, bool ascending) where T : IComparable<T>
         {
             for (int i = 0; i < array.Length - 1; i++)
             {
@@ -43,7 +43,7 @@ namespace ZVSlibs.Sorting
         /// <typeparam name="T">Тип массива.</typeparam>
         /// <param name="array">Массив для сортировки.</param>
         /// <param name="ascending">если <i>true</i>, то сортировка по возрастанию.</param>
-        public static void QuickSorter<T>(T[] array, bool ascending) where T : IComparable<T>
+        public static void QuickSort<T>(T[] array, bool ascending) where T : IComparable<T>
         {
             int partition(T[] m, int a, int b)
             {

@@ -13,4 +13,10 @@
     <PackageReference Include="coverlet.collector" Version="1.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ZVS.FilterSort\ZVS.FilterSort.csproj" />
+    <ProjectReference Include="..\ZVS.Global\ZVS.Global.csproj" />
+    <ProjectReference Include="..\ZVS.Libs\ZVS.Libs.csproj" />
+  </ItemGroup>
+
 </Project>
