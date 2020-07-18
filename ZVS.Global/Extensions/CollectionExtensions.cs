@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace ZVS.Global.Extensions
@@ -77,6 +78,14 @@ namespace ZVS.Global.Extensions
                 result.Add(item.Clone() as T);
             }
             return result;
+        }
+
+        public static bool IsNullOrEmpty(this IEnumerable target)
+        {
+            if (target == null) return true;
+            var enumerator = target.GetEnumerator();
+            enumerator.Reset();
+            return !enumerator.MoveNext();
         }
     }
 }

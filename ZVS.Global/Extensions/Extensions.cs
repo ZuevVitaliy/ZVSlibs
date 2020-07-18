@@ -5,9 +5,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Text;
 
-//ToDo: Не указан случай сравнения объектов, если типы данных разные.
-
-namespace ZVSlibs.Global.Extensions
+namespace ZVS.Global.Extensions
 {
     /// <summary>
     /// Класс расширений
@@ -20,18 +18,36 @@ namespace ZVSlibs.Global.Extensions
         /// <param name="A">Объект А.</param>
         /// <param name="B">Объект Б</param>
         /// <returns>Равны обекты или нет по одноименным полям и свойствам.</returns>
-        public static bool EqualBySameData(object A, object B)
+        public static bool EqualBySameData(object A, object B, Type castingType = null)
         {
-            Type typeA = A.GetType();
-            Type typeB = B.GetType();
-            FieldInfo[] fieldsA = typeA.GetFields();
-            FieldInfo[] fieldsB = typeB.GetFields();
+            Type typeA;
+            Type typeB;
+            FieldInfo[] fieldsA;
+            FieldInfo[] fieldsB;
+            PropertyInfo[] propertiesA;
+            PropertyInfo[] propertiesB;
+
+            if (castingType != null)
+            {
+                if (!(A.GetType().IsAssignableFrom(castingType) || !(B.GetType().IsAssignableFrom(castingType))))
+                    return false;
+
+                fieldsA = fieldsB = castingType.GetFields();
+                propertiesA = propertiesB = castingType.GetProperties();
+            }
+            else
+            {
+                typeA = A.GetType();
+                typeB = B.GetType();
+                fieldsA = typeA.GetFields();
+                fieldsB = typeB.GetFields();
+                propertiesA = typeA.GetProperties();
+                propertiesB = typeB.GetProperties();
+            }
             bool equalFields = (from a in fieldsA
                                 from b in fieldsB
                                 where a.Name == b.Name
                                 select a.GetValue(A).Equals(b.GetValue(B))).All(x => x);
-            PropertyInfo[] propertiesA = typeA.GetProperties();
-            PropertyInfo[] propertiesB = typeB.GetProperties();
             bool equalProperties = (from a in propertiesA
                                     from b in propertiesB
                                     where a.Name == b.Name
@@ -74,6 +90,14 @@ namespace ZVSlibs.Global.Extensions
         /// Получить всех наследников от типа.
         /// </summary>
         public static IEnumerable<Type> GetInherits(this Type type)
+        {
+            return type.Assembly.ExportedTypes.Where(t => t.IsAssignableFrom(type));
+        }
+
+        /// <summary>
+        /// Получить всех предков от типа.
+        /// </summary>
+        public static IEnumerable<Type> GetAncestors(this Type type)
         {
             return type.Assembly.ExportedTypes.Where(t => type.IsAssignableFrom(t));
         }
