@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
@@ -100,6 +101,39 @@ namespace ZVS.Global.Extensions
         public static IEnumerable<Type> GetAncestors(this Type type)
         {
             return type.Assembly.ExportedTypes.Where(t => type.IsAssignableFrom(t));
+        }
+
+        /// <summary>
+        /// Получить имя свойства или поля.
+        /// </summary>
+        /// <param name="propertyOrFieldExpression">Вызываемое свойство или поле.</param>
+        /// <returns></returns>
+        public static string NameOf(Expression<Func<object>> propertyOrFieldExpression)
+        {
+            var unary = propertyOrFieldExpression.Body as UnaryExpression;
+            if (unary != null)
+            {
+                return (unary.Operand as MemberExpression).Member.Name;
+            }
+            else
+            {
+                return (propertyOrFieldExpression.Body as MemberExpression).Member.Name;
+            }
+        }
+
+        /// <summary>
+        /// Получить имя метода.
+        /// </summary>
+        /// <param name="methodExpression">Вызываемый метод.</param>
+        /// <returns></returns>
+        public static string NameOf(Expression<Action> methodExpression)
+        {
+            var method = methodExpression.Body as MethodCallExpression;
+            if (method != null)
+            {
+                return method.Method.Name;
+            }
+            return null;
         }
     }
 }
