@@ -13,7 +13,7 @@ namespace ZVS.Global.Extensions
     /// <summary>
     /// Класс расширений
     /// </summary>
-    public static class Extensions
+    public static class CommonExtensions
     {
         /// <summary>
         /// Метод сравнения объектов на равенство значений для одноименных полей и свойств.
@@ -136,72 +136,6 @@ namespace ZVS.Global.Extensions
                 return method.Method.Name;
             }
             return null;
-        }
-
-        /// <summary>
-        /// Получить первый встреченный родительский элемент заданного типа.
-        /// </summary>
-        /// <typeparam name="T">Заданый тип элемента.</typeparam>
-        /// <param name="element">Дочерний элемент, с которого начнется поиск.</param>
-        /// <returns>Родительский элемент заданного типа.</returns>
-        public static T GetParentOfType<T>(this DependencyObject element) where T : class
-        {
-            if (element == null)
-                throw new ArgumentNullException("element");
-
-            DependencyObject parent = element.GetParent();
-            while (parent != null)
-            {
-                if (parent is T)
-                {
-                    return parent as T;
-                }
-
-                parent = parent.GetParent();
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Получить все родительские элементы от текущего элемента.
-        /// </summary>
-        /// <param name="element">Дочерний элемент, с которого начнется поиск.</param>
-        /// <returns>Набор родительских элементов.</returns>
-        public static IEnumerable<DependencyObject> GetParents(this DependencyObject element)
-        {
-            if (element == null)
-                throw new ArgumentNullException("element");
-            while ((element = GetParent(element)) != null)
-                yield return element;
-        }
-
-        /// <summary>
-        /// Получить непосрдственный родительсий элемент от текущего элемента.
-        /// </summary>
-        /// <param name="element">Текущий дочерний элемент.</param>
-        /// <returns>Родительсий элемент.</returns>
-        public static DependencyObject GetParent(this DependencyObject element)
-        {
-            DependencyObject dependencyObject;
-            try
-            {
-                dependencyObject = VisualTreeHelper.GetParent(element);
-            }
-            catch (InvalidOperationException ex)
-            {
-                dependencyObject = null;
-            }
-            if (dependencyObject == null)
-            {
-                FrameworkElement frameworkElement = element as FrameworkElement;
-                if (frameworkElement != null)
-                    dependencyObject = frameworkElement.Parent;
-                FrameworkContentElement frameworkContentElement = element as FrameworkContentElement;
-                if (frameworkContentElement != null)
-                    dependencyObject = frameworkContentElement.Parent;
-            }
-            return dependencyObject;
         }
     }
 }

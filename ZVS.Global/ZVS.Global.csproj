@@ -46,7 +46,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\CollectionExtensions.cs" />
-    <Compile Include="Extensions\Extensions.cs" />
+    <Compile Include="Extensions\DrawingExtensions.cs" />
+    <Compile Include="Extensions\CommonExtensions.cs" />
+    <Compile Include="Extensions\WindowsExtensions.cs" />
     <Compile Include="Interfaces\ICloneable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
