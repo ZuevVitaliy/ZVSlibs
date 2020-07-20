@@ -49,7 +49,7 @@ namespace ZVS.Global.Extensions
         }
 
         /// <summary>
-        /// Получить непосрдственный родительсий элемент от текущего элемента.
+        /// Получить непосредственный родительсий элемент от текущего элемента.
         /// </summary>
         /// <param name="element">Текущий дочерний элемент.</param>
         /// <returns>Родительсий элемент.</returns>
@@ -74,6 +74,38 @@ namespace ZVS.Global.Extensions
                     dependencyObject = frameworkContentElement.Parent;
             }
             return dependencyObject;
+        }
+
+        /// <summary>
+        /// Получить дочерние элементы от текущего элемента.
+        /// </summary>
+        /// <typeparam name="T">Заданный тип элементов.</typeparam>
+        /// <param name="element">Родительский элемент, с которого начнется поиск.</param>
+        /// <returns>Дочерние элементы заданного типа.</returns>
+        public static IEnumerable<T> GetChildrensOfType<T>(this DependencyObject element)
+        {
+            return Enumerable.OfType<T>(element.GetChildrens());
+        }
+
+        /// <summary>
+        /// Получить все дочерние элементы от текущего элемента.
+        /// </summary>
+        /// <param name="element">Родительский элемент, с которого начнется поиск.</param>
+        /// <returns>Набор дочерних элементов.</returns>
+        public static IEnumerable<DependencyObject> GetChildrens(this DependencyObject element)
+        {
+            if (element == null)
+                throw new ArgumentNullException("element");
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(element); ++i)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(element, i);
+                if (child != null)
+                {
+                    yield return child;
+                    foreach (DependencyObject dependencyObject in GetChildrens(child))
+                        yield return dependencyObject;
+                }
+            }
         }
     }
 }
