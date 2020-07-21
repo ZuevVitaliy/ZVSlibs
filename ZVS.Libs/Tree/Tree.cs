@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ZVSlibs.Tree
+namespace ZVS.Libs.Tree
 {
     /// <summary>
     /// Структура данных, хранящая значения в виде логического дерева.

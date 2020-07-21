@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ZVSlibs.QuadraticEquation
+namespace ZVS.Libs.Math
 {
     public static class QuadraticEquation
     {

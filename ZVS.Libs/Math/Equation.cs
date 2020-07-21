@@ -1,4 +1,4 @@
-﻿namespace ZVSlibs.Equation
+﻿namespace ZVS.Libs.Math
 {
     public class Equation
     {
