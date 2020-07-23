@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZVS.FilterSort", "ZVS.Filte
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZVS.Global", "ZVS.Global\ZVS.Global.csproj", "{634DB4D9-64CE-4B8C-B377-C3EE77A9818D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZVS.WPF.Libs", "ZVS.WPF.Libs\ZVS.WPF.Libs.csproj", "{8DDE4E40-209F-4091-9DA6-97ADEAE064F7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{634DB4D9-64CE-4B8C-B377-C3EE77A9818D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{634DB4D9-64CE-4B8C-B377-C3EE77A9818D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{634DB4D9-64CE-4B8C-B377-C3EE77A9818D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DDE4E40-209F-4091-9DA6-97ADEAE064F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DDE4E40-209F-4091-9DA6-97ADEAE064F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DDE4E40-209F-4091-9DA6-97ADEAE064F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DDE4E40-209F-4091-9DA6-97ADEAE064F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
