@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZVS.FilterSort", "ZVS.Filte
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZVS.Global", "ZVS.Global\ZVS.Global.csproj", "{634DB4D9-64CE-4B8C-B377-C3EE77A9818D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZVS.WPF.Libs", "ZVS.WPF.Libs\ZVS.WPF.Libs.csproj", "{8DDE4E40-209F-4091-9DA6-97ADEAE064F7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZVS.WPF", "ZVS.WPF\ZVS.WPF.csproj", "{8DDE4E40-209F-4091-9DA6-97ADEAE064F7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

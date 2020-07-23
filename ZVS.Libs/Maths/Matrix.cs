@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ZVS.Libs.Math
+namespace ZVS.Libs.Maths
 {
     internal class NotSquareException : Exception
     { }
