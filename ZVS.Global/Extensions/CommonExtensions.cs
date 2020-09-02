@@ -47,15 +47,15 @@ namespace ZVS.Global.Extensions
                 propertiesA = typeA.GetProperties();
                 propertiesB = typeB.GetProperties();
             }
-            bool equalFields = (from a in fieldsA
+            bool isEqualFields = (from a in fieldsA
                                 from b in fieldsB
                                 where a.Name == b.Name
                                 select a.GetValue(A).Equals(b.GetValue(B))).All(x => x);
-            bool equalProperties = (from a in propertiesA
+            bool isEqualProperties = (from a in propertiesA
                                     from b in propertiesB
                                     where a.Name == b.Name
                                     select a.GetValue(A).Equals(b.GetValue(B))).All(x => x);
-            return equalFields && equalProperties;
+            return isEqualFields && isEqualProperties;
         }
 
         /// <summary>
@@ -66,8 +66,7 @@ namespace ZVS.Global.Extensions
         /// <returns>Равны обекты или нет.</returns>
         public static bool Equal(object A, object B)
         {
-            if (A.GetType() != B.GetType()) return false;
-            return EqualBySameData(A, B);
+            return A.GetType() == B.GetType() && EqualBySameData(A, B);
         }
 
         /// <summary>
@@ -102,7 +101,7 @@ namespace ZVS.Global.Extensions
         /// </summary>
         public static IEnumerable<Type> GetAncestors(this Type type)
         {
-            return type.Assembly.ExportedTypes.Where(t => type.IsAssignableFrom(t));
+            return type.Assembly.ExportedTypes.Where(type.IsAssignableFrom);
         }
 
         /// <summary>

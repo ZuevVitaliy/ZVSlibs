@@ -84,7 +84,7 @@ namespace ZVS.Global.Extensions
         /// <returns>Дочерние элементы заданного типа.</returns>
         public static IEnumerable<T> GetChildrensOfType<T>(this DependencyObject element)
         {
-            return Enumerable.OfType<T>(element.GetChildrens());
+            return element.GetChildrens().OfType<T>();
         }
 
         /// <summary>
