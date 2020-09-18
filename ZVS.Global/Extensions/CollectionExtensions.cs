@@ -38,13 +38,10 @@ namespace ZVS.Global.Extensions
             if (collection != null && otherEnumerable != null)
             {
                 bool result = true;
-                var newCollection = collection.CloneCollection();
                 foreach (var item in otherEnumerable)
                 {
-                    if (!newCollection.Remove(item)) result = false;
+                    if (!collection.Remove(item)) result = false;
                 }
-                collection.Clear();
-                collection.AddRange(newCollection);
 
                 return result;
             }
@@ -83,9 +80,102 @@ namespace ZVS.Global.Extensions
         public static bool IsNullOrEmpty(this IEnumerable target)
         {
             if (target == null) return true;
-            var enumerator = target.GetEnumerator();
+            IEnumerator enumerator = target.GetEnumerator();
             enumerator.Reset();
             return !enumerator.MoveNext();
+        }
+
+        /// <summary>
+        /// Выборка уникальных значений по заданному ключу.<br/>
+        /// <i>Если необходим составной ключ, то воспользуйтесь анонимным типом (new { key1, key2 })</i><br/>
+        /// <b>!Важно: используется отложенный итератор!</b>
+        /// </summary>
+        public static IEnumerable<TSource> Distinct<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+        {
+            HashSet<TKey> seenKeys = new HashSet<TKey>();
+            foreach (TSource element in source)
+            {
+                if (seenKeys.Add(keySelector(element)))
+                {
+                    yield return element;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Удаление дубликатов значений из коллекции по заданному ключу.<br/>
+        /// <i>Если необходим составной ключ, то воспользуйтесь анонимным типом (new { key1, key2 })</i>
+        /// </summary>
+        public static void Distinct<TSource, TKey>(this ICollection<TSource> source, Func<TSource, TKey> keySelector)
+        {
+            List<TSource> deletingElements = new List<TSource>(source.Count / 2);
+            HashSet<TKey> seenKeys = new HashSet<TKey>();
+            foreach (var element in source)
+            {
+                if (!seenKeys.Add(keySelector(element)))
+                {
+                    deletingElements.Add(element);
+                }
+            }
+
+            foreach (var element in deletingElements)
+            {
+                source.Remove(element);
+            }
+        }
+
+        /// <summary>
+        /// Объединение двух наборов уникальными значениями по заданному ключу.<br/>
+        /// <i>Если необходим составной ключ, то воспользуйтесь анонимным типом (new { key1, key2 })</i><br/>
+        /// <b>!Важно: используется отложенный итератор!</b>
+        /// </summary>
+        public static IEnumerable<TSource> Union<TSource, TKey>(this IEnumerable<TSource> source,
+            IEnumerable<TSource> second, Func<TSource, TKey> keySelector)
+        {
+            HashSet<TKey> seenKeys = new HashSet<TKey>();
+            foreach (TSource element in source)
+            {
+                if (seenKeys.Add(keySelector(element)))
+                {
+                    yield return element;
+                }
+            }
+            foreach (TSource element in second)
+            {
+                if (seenKeys.Add(keySelector(element)))
+                {
+                    yield return element;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Объединение уникальных значений в текущую коллекцию по заданному ключу.<br/>
+        /// <i>Если необходим составной ключ, то воспользуйтесь анонимным типом (new { key1, key2 })</i>
+        /// </summary>
+        public static void Union<TSource, TKey>(this ICollection<TSource> source,
+            IEnumerable<TSource> second, Func<TSource, TKey> keySelector)
+        {
+            List<TSource> deletingElements = new List<TSource>(source.Count / 2);
+            HashSet<TKey> seenKeys = new HashSet<TKey>();
+            foreach (var element in source)
+            {
+                if (!seenKeys.Add(keySelector(element)))
+                {
+                    deletingElements.Add(element);
+                }
+            }
+            foreach (var element in deletingElements)
+            {
+                source.Remove(element);
+            }
+            foreach (var element in second)
+            {
+                if (seenKeys.Add(keySelector(element)))
+                {
+                    source.Add(element);
+                }
+            }
         }
     }
 }
