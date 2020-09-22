@@ -51,7 +51,7 @@ namespace ZVS.Global.Extensions
         /// <summary>
         /// Копирование текущей коллекции (Создание копии коллекции с другой ссылкой, но не элементов).
         /// </summary>
-        /// <typeparam name="T">Тип коллекции.</typeparam>
+        /// <typeparam name="T">Тип элементов коллекции.</typeparam>
         /// <param name="collection">Копируемая коллекция.</param>
         /// <returns>Коллекция того же типа, но с другой ссылкой.</returns>
         public static ICollection<T> CloneCollection<T>(this ICollection<T> collection)
@@ -64,19 +64,24 @@ namespace ZVS.Global.Extensions
         /// <summary>
         /// Абсолютное копирование текущей коллекции (Создание копии коллекции с другой ссылкой, включая элементы).
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="collection"></param>
-        /// <returns></returns>
-        public static ICollection<T> CloneCollectionAbsolute<T>(this ICollection<T> collection) where T : class, ICloneable
+        /// <typeparam name="T">Тип элементов коллекции.</typeparam>
+        /// <param name="collection">Копируемая коллекция</param>
+        /// <returns>Коллекция того же типа, но с другой ссылкой как самой коллекции, так и каждого элемента.</returns>
+        public static ICollection<T> CloneCollectionAbsolute<T>(this ICollection<T> collection) where T : ICloneable
         {
             var result = (ICollection<T>)Activator.CreateInstance(collection.GetType());
             foreach (var item in collection)
             {
-                result.Add(item.Clone() as T);
+                result.Add((T)item.Clone());
             }
             return result;
         }
 
+        /// <summary>
+        /// Проверяет перечисление на наличие ссылки или элементов в ней.
+        /// </summary>
+        /// <param name="target">Исходное перечисление.</param>
+        /// <returns>Если коллекция пустая или не имеет ссылки, то false, иначе true.</returns>
         public static bool IsNullOrEmpty(this IEnumerable target)
         {
             if (target == null) return true;
@@ -90,6 +95,11 @@ namespace ZVS.Global.Extensions
         /// <i>Если необходим составной ключ, то воспользуйтесь анонимным типом (new { key1, key2 })</i><br/>
         /// <b>!Важно: используется отложенный итератор!</b>
         /// </summary>
+        /// <typeparam name="TSource">Тип элементов перечисления.</typeparam>
+        /// <typeparam name="TKey">Тип ключа.</typeparam>
+        /// <param name="source">Элементы исходного перечисления.</param>
+        /// <param name="keySelector">Функция извлечения ключа элемента.</param>
+        /// <returns>Новое перечисление с уникальными значениями по заданному ключу.</returns>
         public static IEnumerable<TSource> Distinct<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
         {
             HashSet<TKey> seenKeys = new HashSet<TKey>();
@@ -106,6 +116,10 @@ namespace ZVS.Global.Extensions
         /// Удаление дубликатов значений из коллекции по заданному ключу.<br/>
         /// <i>Если необходим составной ключ, то воспользуйтесь анонимным типом (new { key1, key2 })</i>
         /// </summary>
+        /// <typeparam name="TSource">Тип элементов коллекции.</typeparam>
+        /// <typeparam name="TKey">Тип ключа.</typeparam>
+        /// <param name="source">Элементы коллекции.</param>
+        /// <param name="keySelector">Функция извлечения ключа элемента.</param>
         public static void Distinct<TSource, TKey>(this ICollection<TSource> source, Func<TSource, TKey> keySelector)
         {
             List<TSource> deletingElements = new List<TSource>(source.Count / 2);
@@ -129,6 +143,12 @@ namespace ZVS.Global.Extensions
         /// <i>Если необходим составной ключ, то воспользуйтесь анонимным типом (new { key1, key2 })</i><br/>
         /// <b>!Важно: используется отложенный итератор!</b>
         /// </summary>
+        /// <typeparam name="TSource">Тип элементов перечисления.</typeparam>
+        /// <typeparam name="TKey">Тип ключа.</typeparam>
+        /// <param name="source">Элементы исходного перечисления.</param>
+        /// <param name="second">Элементы второго перечисления.</param>
+        /// <param name="keySelector">Функция извлечения ключа элемента.</param>
+        /// <returns>Новое объединенное перечисление с уникальными значениями по заданному ключу.</returns>
         public static IEnumerable<TSource> Union<TSource, TKey>(this IEnumerable<TSource> source,
             IEnumerable<TSource> second, Func<TSource, TKey> keySelector)
         {
@@ -153,6 +173,11 @@ namespace ZVS.Global.Extensions
         /// Объединение уникальных значений в текущую коллекцию по заданному ключу.<br/>
         /// <i>Если необходим составной ключ, то воспользуйтесь анонимным типом (new { key1, key2 })</i>
         /// </summary>
+        /// <typeparam name="TSource">Тип элементов коллекции.</typeparam>
+        /// <typeparam name="TKey">Тип ключа.</typeparam>
+        /// <param name="source">Элементы исходной коллекции.</param>
+        /// <param name="second">Элементы второго перечисления.</param>
+        /// <param name="keySelector">Функция извлечения ключа элемента.</param>
         public static void Union<TSource, TKey>(this ICollection<TSource> source,
             IEnumerable<TSource> second, Func<TSource, TKey> keySelector)
         {
@@ -175,6 +200,38 @@ namespace ZVS.Global.Extensions
                 {
                     source.Add(element);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Проверяет за один проход, что все или хотя бы один элемент в перечислении удовлетворяют условию.
+        /// </summary>
+        /// <typeparam name="TSource">Тип элементов перечисления.</typeparam>
+        /// <param name="source">Элементы исходного перечисления.</param>
+        /// <param name="predicate">Условие для проверки элементов.</param>
+        /// <param name="all">Результат, если все вхождения удовлетворяют условию.</param>
+        /// <param name="any">Результат, если хотя бы одно вхождение удовлетворяет условию.</param>
+        public static void AllAny<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate,
+            out bool all, out bool any)
+        {
+            if (source.IsNullOrEmpty())
+            {
+                all = false;
+                any = false;
+                return;
+            }
+
+            all = true;
+            any = false;
+            foreach (var item in source)
+            {
+                if (predicate(item))
+                    any = true;
+                else
+                    all = false;
+
+                if (any && !all)
+                    break;
             }
         }
     }
