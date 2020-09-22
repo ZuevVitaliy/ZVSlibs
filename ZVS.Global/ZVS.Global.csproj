@@ -49,10 +49,11 @@
     <Compile Include="Extensions\CollectionExtensions.cs" />
     <Compile Include="Extensions\DrawingExtensions.cs" />
     <Compile Include="Extensions\CommonExtensions.cs" />
-    <Compile Include="Extensions\Icons.cs" />
     <Compile Include="Extensions\WindowsExtensions.cs" />
+    <Compile Include="Drawing\Icons.cs" />
     <Compile Include="Interfaces\ICloneable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\Crypter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

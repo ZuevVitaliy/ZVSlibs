@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
 
-namespace ZVS.Global.Extensions
+namespace ZVS.Global.Drawing
 {
     public static class Icons
     {
