@@ -1,12 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using ZVS.Global.Extensions;
 
 namespace ZVS.FilterSort
 {
     public class FilterSorterManager<T> : IFilterSorterManager<T>
     {
-        private HashSet<IFilterSorterDescriptor<T>> mFilterSorters;
+        private Dictionary<string, IFilterSorterDescriptor<T>> mFilterSorters;
 
         public int Count => mFilterSorters.Count;
 
@@ -14,23 +14,25 @@ namespace ZVS.FilterSort
 
         public void Add(IFilterSorterDescriptor<T> filterSorterDescriptor)
         {
-            mFilterSorters.Add(filterSorterDescriptor);
+            mFilterSorters.Add(filterSorterDescriptor.Expression, filterSorterDescriptor);
         }
 
         public void AddRange(IEnumerable<IFilterSorterDescriptor<T>> filterSorters)
         {
-            mFilterSorters.AddRange(filterSorters);
+            foreach (var filterSorterDescriptor in filterSorters)
+            {
+                if (!mFilterSorters.ContainsKey(filterSorterDescriptor.Expression))
+                    mFilterSorters.Add(filterSorterDescriptor.Expression, filterSorterDescriptor);
+            }
         }
 
         public IEnumerable<T> Apply(IEnumerable<T> sourceData)
         {
             if (sourceData == null)
-            {
-                System.Diagnostics.Debug.WriteLine("Source data is null");
-                return null;
-            }
+                throw new NullReferenceException("Source data is null");
+
             var result = sourceData;
-            foreach (var filterSorter in mFilterSorters)
+            foreach (var filterSorter in mFilterSorters.Values)
             {
                 result = filterSorter.Apply(result);
             }
@@ -49,22 +51,34 @@ namespace ZVS.FilterSort
 
         public bool Contains(IFilterSorterDescriptor<T> filterSorterDescriptor)
         {
-            return mFilterSorters.Contains(filterSorterDescriptor);
+            return filterSorterDescriptor != null && mFilterSorters.ContainsKey(filterSorterDescriptor.Expression);
+        }
+
+        public void CopyTo(IFilterSorterDescriptor<T>[] array, int arrayIndex)
+        {
+            mFilterSorters.Values.CopyTo(array, arrayIndex);
         }
 
         public bool Remove(IFilterSorterDescriptor<T> filterSorterDescriptor)
         {
-            return mFilterSorters.Remove(filterSorterDescriptor);
+            return filterSorterDescriptor != null && mFilterSorters.Remove(filterSorterDescriptor.Expression);
         }
 
         public bool RemoveRange(IEnumerable<IFilterSorterDescriptor<T>> filterSorters)
         {
-            return mFilterSorters.RemoveRange(filterSorters);
+            bool hasAllRemoved = true;
+            foreach (var filterSorterDescriptor in filterSorters)
+            {
+                if (!mFilterSorters.Remove(filterSorterDescriptor.Expression))
+                    hasAllRemoved = false;
+            }
+
+            return hasAllRemoved;
         }
 
         public IEnumerator<IFilterSorterDescriptor<T>> GetEnumerator()
         {
-            return mFilterSorters.GetEnumerator();
+            return mFilterSorters.Values.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

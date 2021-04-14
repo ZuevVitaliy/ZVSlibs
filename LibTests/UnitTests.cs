@@ -2,7 +2,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using ZVS.Global.Extensions;
 
@@ -21,9 +20,8 @@ namespace LibTests
         [TestMethod]
         public void TestMethod()
         {
-            var res = typeof(IEnumerable<object>);
-            var res2 = typeof(People_TestStruct).BaseType;
-            //Assert.IsTrue(typeof(People_TestStruct).IsAssignableFrom(typeof(object)));
+            string numberString = "1001";
+            int number = int.Parse(numberString);
         }
 
         [TestMethod]
@@ -89,5 +87,5 @@ namespace LibTests
             emptyList = new ArrayList();
             Assert.IsTrue(emptyList.IsNullOrEmpty());
         }
-    }       
+    }
 }

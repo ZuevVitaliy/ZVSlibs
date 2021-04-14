@@ -19,7 +19,7 @@ namespace ZVS.Libs.Maths
             }
             else if (D < 0)
             {
-                return null;
+                return new double[0];
             }
             else
             {
@@ -30,23 +30,17 @@ namespace ZVS.Libs.Maths
         public static string GetTextResolve(double a, double b, double c)
         {
             double[] result = GetResult(a, b, c);
-            if (result == null)
+            switch (result.Length)
             {
-                return string.Format(@"Квадратное уравнение вида {0}x^2 + {1}x + {2} не имеет корней", a, b, c);
-            }
-            else if (result.Length == 1)
-            {
-                return string.Format(@"Квадратное уравнение вида {0}x^2 + {1}x + {2} 
-                                     имеет дискриминант, равный D=0, с корнем X={3}",
-                    a, b, c, result[0]);
-            }
-            else
-            {
-                return string.Format(@"Квадратное уравнение вида {0}x^2 + {1}x + {2} 
-                                     имеет дискриминант, равный D={3}, с корнями
-                                     X1={4}
-                                     X2={5}",
-                    a, b, c, result[2], result[0], result[1]);
+                case 0:
+                    return $"Квадратное уравнение вида {a}x^2 + {b}x + {c} не имеет корней";
+                case 1:
+                    return $"Квадратное уравнение вида {a}x^2 + {b}x + {c} имеет дискриминант, равный D=0, с корнем X={result[0]}";
+                default:
+                    return $"Квадратное уравнение вида {a}x^2 + {b}x + {c} \n" +
+                           $"имеет дискриминант, равный D={result[2]}, с корнями" +
+                           $"X1={result[0]}" +
+                           $"X2={result[1]}";
             }
         }
 

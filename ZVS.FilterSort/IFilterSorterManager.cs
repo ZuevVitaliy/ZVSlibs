@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ZVS.FilterSort
 {
-    public interface IFilterSorterManager<T> : IEnumerable<IFilterSorterDescriptor<T>>
+    public interface IFilterSorterManager<T> : ICollection<IFilterSorterDescriptor<T>>,  IEnumerable<IFilterSorterDescriptor<T>>
     {
         void Add(IFilterSorterDescriptor<T> filterSorterDescriptor);
 

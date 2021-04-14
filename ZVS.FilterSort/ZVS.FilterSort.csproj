@@ -42,7 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FilterDescriptor.cs" />
-    <Compile Include="FilterSortExtensions.cs" />
+    <Compile Include="FilterSorterExtensions.cs" />
     <Compile Include="FilterSorterManager.cs" />
     <Compile Include="IFilterSorterManager.cs" />
     <Compile Include="IFilterSorterDescriptor.cs" />

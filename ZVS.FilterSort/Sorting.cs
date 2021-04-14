@@ -17,7 +17,7 @@ namespace ZVS.FilterSort
         /// <typeparam name="T">Тип массива.</typeparam>
         /// <param name="array">Массив для сортировки.</param>
         /// <param name="ascending">если <i>true</i>, то сортировка по возрастанию.</param>
-        public static void BubbleSort<T>(T[] array, bool ascending) where T : IComparable<T>
+        public static void BubbleSort<T>(T[] array, bool ascending = true) where T : IComparable<T>
         {
             for (int i = 0; i < array.Length - 1; i++)
             {
@@ -43,9 +43,9 @@ namespace ZVS.FilterSort
         /// <typeparam name="T">Тип массива.</typeparam>
         /// <param name="array">Массив для сортировки.</param>
         /// <param name="ascending">если <i>true</i>, то сортировка по возрастанию.</param>
-        public static void QuickSort<T>(T[] array, bool ascending) where T : IComparable<T>
+        public static void QuickSort<T>(T[] array, bool ascending = true) where T : IComparable<T>
         {
-            int partition(T[] m, int a, int b)
+            int Partition(T[] m, int a, int b)
             {
                 int wall = a;
                 T pivot = m[b];
@@ -73,7 +73,7 @@ namespace ZVS.FilterSort
             void Quicksort(T[] m, int a, int b)
             {
                 if (a >= b) return;
-                int c = partition(m, a, b);
+                int c = Partition(m, a, b);
                 Quicksort(m, a, c - 1);
                 Quicksort(m, c + 1, b);
             }

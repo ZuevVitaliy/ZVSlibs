@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace ZVS.WPF.Libs.Windows
@@ -16,7 +14,6 @@ namespace ZVS.WPF.Libs.Windows
 
         //protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         //{
-
         //    var viewModel = DataContext as BaseWindowViewModel;
         //    if (sizeInfo.WidthChanged)
         //    {

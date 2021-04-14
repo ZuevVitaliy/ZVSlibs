@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using Microsoft.Win32;
 
 namespace ZVS.Global.Drawing
 {
@@ -27,18 +27,18 @@ namespace ZVS.Global.Drawing
             }
         }
 
-        #endregion
+        #endregion Custom exceptions class
 
         #region DllImports
 
         /// <summary>
-        /// Contains information about a file object. 
+        /// Contains information about a file object.
         /// </summary>
-        struct SHFILEINFO
+        private struct SHFILEINFO
         {
             /// <summary>
             /// Handle to the icon that represents the file. You are responsible for
-            /// destroying this handle with DestroyIcon when you no longer need it. 
+            /// destroying this handle with DestroyIcon when you no longer need it.
             /// </summary>
             public IntPtr hIcon;
 
@@ -70,18 +70,19 @@ namespace ZVS.Global.Drawing
         };
 
         [Flags]
-        enum FileInfoFlags : int
+        private enum FileInfoFlags : int
         {
             /// <summary>
-            /// Retrieve the handle to the icon that represents the file and the index 
-            /// of the icon within the system image list. The handle is copied to the 
-            /// hIcon member of the structure specified by psfi, and the index is copied 
+            /// Retrieve the handle to the icon that represents the file and the index
+            /// of the icon within the system image list. The handle is copied to the
+            /// hIcon member of the structure specified by psfi, and the index is copied
             /// to the iIcon member.
             /// </summary>
             SHGFI_ICON = 0x000000100,
+
             /// <summary>
-            /// Indicates that the function should not attempt to access the file 
-            /// specified by pszPath. Rather, it should act as if the file specified by 
+            /// Indicates that the function should not attempt to access the file
+            /// specified by pszPath. Rather, it should act as if the file specified by
             /// pszPath exists with the file attributes passed in dwFileAttributes.
             /// </summary>
             SHGFI_USEFILEATTRIBUTES = 0x000000010
@@ -90,7 +91,7 @@ namespace ZVS.Global.Drawing
         /// <summary>
         ///     Creates an array of handles to large or small icons extracted from
         ///     the specified executable file, dynamic-link library (DLL), or icon
-        ///     file. 
+        ///     file.
         /// </summary>
         /// <param name="lpszFile">
         ///     Name of an executable file, DLL, or icon file from which icons will
@@ -108,15 +109,15 @@ namespace ZVS.Global.Drawing
         ///         the total number of icons in the specified file. If the file is an
         ///         executable file or DLL, the return value is the number of
         ///         RT_GROUP_ICON resources. If the file is an .ico file, the return
-        ///         value is 1. 
+        ///         value is 1.
         ///     </para>
         ///     <para>
-        ///         Windows 95/98/Me, Windows NT 4.0 and later: If this value is a 
-        ///         negative number and either <paramref name="phiconLarge"/> or 
+        ///         Windows 95/98/Me, Windows NT 4.0 and later: If this value is a
+        ///         negative number and either <paramref name="phiconLarge"/> or
         ///         <paramref name="phiconSmall"/> is not NULL, the function begins by
         ///         extracting the icon whose resource identifier is equal to the
         ///         absolute value of <paramref name="nIconIndex"/>. For example, use -3
-        ///         to extract the icon whose resource identifier is 3. 
+        ///         to extract the icon whose resource identifier is 3.
         ///     </para>
         /// </param>
         /// <param name="phIconLarge">
@@ -127,10 +128,10 @@ namespace ZVS.Global.Drawing
         /// <param name="phIconSmall">
         ///     An array of icon handles that receives handles to the small icons
         ///     extracted from the file. If this parameter is NULL, no small icons
-        ///     are extracted from the file. 
+        ///     are extracted from the file.
         /// </param>
         /// <param name="nIcons">
-        ///     Specifies the number of icons to extract from the file. 
+        ///     Specifies the number of icons to extract from the file.
         /// </param>
         /// <returns>
         ///     If the <paramref name="nIconIndex"/> parameter is -1, the
@@ -138,10 +139,10 @@ namespace ZVS.Global.Drawing
         ///     <paramref name="phiconSmall"/> parameter is NULL, then the return
         ///     value is the number of icons contained in the specified file.
         ///     Otherwise, the return value is the number of icons successfully
-        ///     extracted from the file. 
+        ///     extracted from the file.
         /// </returns>
         [DllImport("Shell32", CharSet = CharSet.Auto)]
-        extern static int ExtractIconEx(
+        private static extern int ExtractIconEx(
             [MarshalAs(UnmanagedType.LPTStr)]
             string lpszFile,
             int nIconIndex,
@@ -150,14 +151,14 @@ namespace ZVS.Global.Drawing
             int nIcons);
 
         [DllImport("Shell32", CharSet = CharSet.Auto)]
-        extern static IntPtr SHGetFileInfo(
+        private static extern IntPtr SHGetFileInfo(
             string pszPath,
             int dwFileAttributes,
             out SHFILEINFO psfi,
             int cbFileInfo,
             FileInfoFlags uFlags);
 
-        #endregion
+        #endregion DllImports
 
         /// <summary>
         /// Two constants extracted from the FileInfoFlags, the only that are
@@ -174,7 +175,7 @@ namespace ZVS.Global.Drawing
         /// </summary>
         /// <param name="fileName">Full path of the file to look for.</param>
         /// <returns></returns>
-        static int GetIconsCountInFile(string fileName)
+        private static int GetIconsCountInFile(string fileName)
         {
             return ExtractIconEx(fileName, -1, null, null, 0);
         }
@@ -296,9 +297,9 @@ namespace ZVS.Global.Drawing
             }
         }
 
-        #endregion
+        #endregion ExtractIcon-like functions
 
-        //this will look throw the registry 
+        //this will look throw the registry
         //to find if the Extension have an icon.
         public static Icon IconFromExtension(string extension,
                                                 SystemIconSize size)

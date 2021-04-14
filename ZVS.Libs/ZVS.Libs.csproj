@@ -54,9 +54,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Maths\Matrix.cs" />
-    <Compile Include="Maths\Equation.cs" />
     <Compile Include="3D\Point3D.cs" />
     <Compile Include="3D\Vector3D.cs" />
+    <Compile Include="Physics\Volume.cs" />
     <Compile Include="Tree\Tree.cs" />
     <Compile Include="Tree\TreeEnumerator.cs" />
     <Compile Include="Maths\QuadraticEquation.cs" />
