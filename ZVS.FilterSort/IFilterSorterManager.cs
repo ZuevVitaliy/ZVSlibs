@@ -1,25 +1,22 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ZVS.FilterSort
 {
-    public interface IFilterSorterManager
+    public interface IFilterSorterManager<T> : IEnumerable<IFilterSorterDescriptor<T>>
     {
-        IEnumerable Apply(IEnumerable sourceData);
-    }
+        void Add(IFilterSorterDescriptor<T> filterSorterDescriptor);
 
-    public interface IFilterSorterManager<T> : IFilterSorterManager
-    {
-        void Add(IFilterSorter<T> filterSorter);
-        void AddRange(IEnumerable<IFilterSorter<T>> filterSorters);
+        void AddRange(IEnumerable<IFilterSorterDescriptor<T>> filterSorters);
+
         void Clear();
-        bool Contains(IFilterSorter<T> filterSorter);
-        bool Remove(IFilterSorter<T> filterSorter);
-        bool RemoveRange(IEnumerable<IFilterSorter<T>> filterSorters);
+
+        bool Contains(IFilterSorterDescriptor<T> filterSorterDescriptor);
+
+        bool Remove(IFilterSorterDescriptor<T> filterSorterDescriptor);
+
+        bool RemoveRange(IEnumerable<IFilterSorterDescriptor<T>> filterSorters);
+
         IEnumerable<T> Apply(IEnumerable<T> sourceData);
     }
 }

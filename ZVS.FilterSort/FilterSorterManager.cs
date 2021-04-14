@@ -6,18 +6,18 @@ namespace ZVS.FilterSort
 {
     public class FilterSorterManager<T> : IFilterSorterManager<T>
     {
-        private HashSet<IFilterSorter<T>> mFilterSorters;
+        private HashSet<IFilterSorterDescriptor<T>> mFilterSorters;
 
         public int Count => mFilterSorters.Count;
 
         public bool IsReadOnly => false;
 
-        public void Add(IFilterSorter<T> filterSorter)
+        public void Add(IFilterSorterDescriptor<T> filterSorterDescriptor)
         {
-            mFilterSorters.Add(filterSorter);
+            mFilterSorters.Add(filterSorterDescriptor);
         }
 
-        public void AddRange(IEnumerable<IFilterSorter<T>> filterSorters)
+        public void AddRange(IEnumerable<IFilterSorterDescriptor<T>> filterSorters)
         {
             mFilterSorters.AddRange(filterSorters);
         }
@@ -47,19 +47,29 @@ namespace ZVS.FilterSort
             mFilterSorters.Clear();
         }
 
-        public bool Contains(IFilterSorter<T> filterSorter)
+        public bool Contains(IFilterSorterDescriptor<T> filterSorterDescriptor)
         {
-            return mFilterSorters.Contains(filterSorter);
+            return mFilterSorters.Contains(filterSorterDescriptor);
         }
 
-        public bool Remove(IFilterSorter<T> filterSorter)
+        public bool Remove(IFilterSorterDescriptor<T> filterSorterDescriptor)
         {
-            return mFilterSorters.Remove(filterSorter);
+            return mFilterSorters.Remove(filterSorterDescriptor);
         }
 
-        public bool RemoveRange(IEnumerable<IFilterSorter<T>> filterSorters)
+        public bool RemoveRange(IEnumerable<IFilterSorterDescriptor<T>> filterSorters)
         {
             return mFilterSorters.RemoveRange(filterSorters);
+        }
+
+        public IEnumerator<IFilterSorterDescriptor<T>> GetEnumerator()
+        {
+            return mFilterSorters.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }
