@@ -2,11 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Net.Http;
 using System.Reflection;
-using System.Text;
-using System.Windows;
-using System.Windows.Media;
 
 namespace ZVS.Global.Extensions
 {
@@ -23,8 +19,6 @@ namespace ZVS.Global.Extensions
         /// <returns>Равны обекты или нет по одноименным полям и свойствам.</returns>
         public static bool EqualBySameData(object A, object B, Type castingType = null)
         {
-            Type typeA;
-            Type typeB;
             FieldInfo[] fieldsA;
             FieldInfo[] fieldsB;
             PropertyInfo[] propertiesA;
@@ -40,22 +34,20 @@ namespace ZVS.Global.Extensions
             }
             else
             {
-                typeA = A.GetType();
-                typeB = B.GetType();
+                Type typeA = A.GetType();
+                Type typeB = B.GetType();
                 fieldsA = typeA.GetFields();
                 fieldsB = typeB.GetFields();
                 propertiesA = typeA.GetProperties();
                 propertiesB = typeB.GetProperties();
             }
-            bool isEqualFields = (from a in fieldsA
-                                from b in fieldsB
-                                where a.Name == b.Name
-                                select a.GetValue(A).Equals(b.GetValue(B))).All(x => x);
-            bool isEqualProperties = (from a in propertiesA
-                                    from b in propertiesB
-                                    where a.Name == b.Name
-                                    select a.GetValue(A).Equals(b.GetValue(B))).All(x => x);
-            return isEqualFields && isEqualProperties;
+            bool isEqualsFields = (from a in fieldsA
+                                   join b in fieldsB on a.Name equals b.Name
+                                   select a.GetValue(A).Equals(b.GetValue(B))).All(x => x);
+            bool isEqualsProperties = (from a in propertiesA
+                                       join b in propertiesB on a.Name equals b.Name
+                                       select a.GetValue(A).Equals(b.GetValue(B))).All(x => x);
+            return isEqualsFields && isEqualsProperties;
         }
 
         /// <summary>
@@ -111,15 +103,12 @@ namespace ZVS.Global.Extensions
         /// <returns></returns>
         public static string NameOf(Expression<Func<object>> propertyOrFieldExpression)
         {
-            var unary = propertyOrFieldExpression.Body as UnaryExpression;
-            if (unary != null)
+            if (propertyOrFieldExpression.Body is UnaryExpression unary)
             {
-                return (unary.Operand as MemberExpression).Member.Name;
+                return (unary.Operand as MemberExpression)?.Member.Name;
             }
-            else
-            {
-                return (propertyOrFieldExpression.Body as MemberExpression).Member.Name;
-            }
+
+            return (propertyOrFieldExpression.Body as MemberExpression)?.Member.Name;
         }
 
         /// <summary>
@@ -129,8 +118,7 @@ namespace ZVS.Global.Extensions
         /// <returns></returns>
         public static string NameOf(Expression<Action> methodExpression)
         {
-            var method = methodExpression.Body as MethodCallExpression;
-            if (method != null)
+            if (methodExpression.Body is MethodCallExpression method)
             {
                 return method.Method.Name;
             }
