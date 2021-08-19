@@ -19,6 +19,30 @@ namespace ZVS.Global.Extensions
         /// <returns>Равны обекты или нет по одноименным полям и свойствам.</returns>
         public static bool EqualBySameData(object A, object B, Type castingType = null)
         {
+            Type commonType = A.GetType();
+
+            Type[] standartTypes = {
+                typeof(bool),
+                typeof(byte),
+                typeof(sbyte),
+                typeof(char),
+                typeof(decimal),
+                typeof(double),
+                typeof(float),
+                typeof(int),
+                typeof(uint),
+                typeof(short),
+                typeof(ulong),
+                typeof(string),
+                typeof(ushort),
+                typeof(long),
+            };
+
+            if (standartTypes.Any(type => type == commonType))
+            {
+                return A.Equals(B);
+            }
+
             FieldInfo[] fieldsA;
             FieldInfo[] fieldsB;
             PropertyInfo[] propertiesA;
@@ -26,7 +50,7 @@ namespace ZVS.Global.Extensions
 
             if (castingType != null)
             {
-                if (!(A.GetType().IsAssignableFrom(castingType) || !(B.GetType().IsAssignableFrom(castingType))))
+                if (!(A.GetType().IsAssignableFrom(castingType) || !B.GetType().IsAssignableFrom(castingType)))
                     return false;
 
                 fieldsA = fieldsB = castingType.GetFields();
@@ -43,10 +67,10 @@ namespace ZVS.Global.Extensions
             }
             bool isEqualsFields = (from a in fieldsA
                                    join b in fieldsB on a.Name equals b.Name
-                                   select a.GetValue(A).Equals(b.GetValue(B))).All(x => x);
+                                   select a.GetValue(A).EqualsCustom(b.GetValue(B))).All(x => x);
             bool isEqualsProperties = (from a in propertiesA
                                        join b in propertiesB on a.Name equals b.Name
-                                       select a.GetValue(A).Equals(b.GetValue(B))).All(x => x);
+                                       select a.GetValue(A).EqualsCustom(b.GetValue(B))).All(x => x);
             return isEqualsFields && isEqualsProperties;
         }
 
@@ -56,28 +80,9 @@ namespace ZVS.Global.Extensions
         /// <param name="A">Объект А.</param>
         /// <param name="B">Объект Б</param>
         /// <returns>Равны обекты или нет.</returns>
-        public static bool Equal(object A, object B)
+        public static bool EqualsCustom(this object A, object B)
         {
             return A.GetType() == B.GetType() && EqualBySameData(A, B);
-        }
-
-        /// <summary>
-        /// Переводит массив строк, содержащий числа, в массив чисел
-        /// </summary>
-        /// <param name="strings">Строковые значения чисел</param>
-        /// <returns>Массив чисел</returns>
-        /// <exception cref="ArgumentNullException"/>
-        /// <exception cref="FormatException"/>
-        /// <exception cref="OverflowException"/>
-        public static double[] ParseToInt(this string[] strings)
-        {
-            var result = new List<double>();
-            foreach (var str in strings)
-            {
-                bool isParsed = double.TryParse(str, out double number);
-                if (isParsed) result.Add(number);
-            }
-            return result.ToArray();
         }
 
         /// <summary>
