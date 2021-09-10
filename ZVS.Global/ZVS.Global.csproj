@@ -51,6 +51,7 @@
     <Compile Include="Extensions\DrawingExtensions.cs" />
     <Compile Include="Extensions\CommonExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="Extensions\GroupingExtensions.cs" />
     <Compile Include="Extensions\WindowsExtensions.cs" />
     <Compile Include="Drawing\Icons.cs" />
     <Compile Include="Interfaces\ICloneable.cs" />
