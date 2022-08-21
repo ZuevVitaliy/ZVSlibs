@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZVS.Global", "ZVS.Global\ZV
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZVS.WPF", "ZVS.WPF\ZVS.WPF.csproj", "{8DDE4E40-209F-4091-9DA6-97ADEAE064F7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZVS.UndoRedo", "ZVS.UndoRedo\ZVS.UndoRedo.csproj", "{C80B9E4A-6193-4E6A-BDBD-F007149602D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{8DDE4E40-209F-4091-9DA6-97ADEAE064F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8DDE4E40-209F-4091-9DA6-97ADEAE064F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8DDE4E40-209F-4091-9DA6-97ADEAE064F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C80B9E4A-6193-4E6A-BDBD-F007149602D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C80B9E4A-6193-4E6A-BDBD-F007149602D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C80B9E4A-6193-4E6A-BDBD-F007149602D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C80B9E4A-6193-4E6A-BDBD-F007149602D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
